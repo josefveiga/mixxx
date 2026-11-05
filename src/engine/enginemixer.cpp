@@ -390,9 +390,29 @@ void EngineMixer::process(const std::size_t bufferSize) {
     CSAMPLE pflMixGainInHeadphones = 1;
     CSAMPLE mainMixGainInHeadphones = 0;
     if (mainEnabled) {
-        const auto cf_val = static_cast<CSAMPLE_GAIN>(m_pHeadMix->get());
-        pflMixGainInHeadphones = 0.5f * (-cf_val + 1.0f);
-        mainMixGainInHeadphones = 0.5f * (cf_val + 1.0f);
+        const auto cf_val = static_cast<CSAMPLE_GAIN>(m_pHeadMix->get()); //cf_val {-1,1}
+        // right master, left cue
+
+        //std::cout << "left" << std::endl;
+
+
+        if (cf_val < 0) { // on left side
+        //xfadePositionLeft *= -1;
+            pflMixGainInHeadphones = static_cast<CSAMPLE_GAIN>(1.0 - (cf_val*-1));
+        } else {
+            pflMixGainInHeadphones = 1.0f;
+        }
+
+        if(cf_val > 0) { // right side
+            mainMixGainInHeadphones = static_cast<CSAMPLE_GAIN>(1.0 - cf_val);
+        } else {
+            mainMixGainInHeadphones = 1.0f;
+        }
+
+        //pflMixGainInHeadphones = 0.5f * (-cf_val + 1.0f);
+        //mainMixGainInHeadphones = 0.5f * (cf_val + 1.0f);
+
+
         // qDebug() << "head val " << cf_val << ", head " << chead_gain
         //          << ", main " << mainGain;
     }
