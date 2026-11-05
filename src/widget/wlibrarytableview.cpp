@@ -364,12 +364,18 @@ QModelIndex WLibraryTableView::moveCursor(CursorAction cursorAction,
             const int row = current.row();
             const int column = current.column();
             if (cursorAction == QAbstractItemView::MoveDown) {
+                //added
+                scrollTo(pModel->index(row + 10, column));
+
                 if (row + 1 < pModel->rowCount()) {
                     return pModel->index(row + 1, column);
                 } else if (!modifiers.testFlag(Qt::ShiftModifier)) {
                     return pModel->index(0, column);
                 }
             } else {
+                //added
+                scrollTo(pModel->index(row - 10, column));
+
                 if (row - 1 >= 0) {
                     return pModel->index(row - 1, column);
                 } else if (!modifiers.testFlag(Qt::ShiftModifier)) {
